@@ -3,21 +3,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Inscription
-  Future<User?> registerWithEmail(String email, String password) async {
+  // 🔐 Inscription avec nom complet, email et mot de passe
+  Future<User?> registerWithEmail(String name, String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      await userCredential.user?.sendEmailVerification(); // Vérification d'email
-      await FirebaseFirestore.instance.collection("users").doc(userCredential.user!.uid).set({
-        "email": email,
-        "role": "membre" // Par défaut, tout utilisateur est un membre
+
+      User? user = result.user;
+
+      // 🔥 Ajouter utilisateur dans Firestore avec un rôle
+      await _firestore.collection('users').doc(user!.uid).set({
+        'name': name,
+        'email': email,
+        'role': 'membre', // 👈 rôle par défaut
       });
 
-      return userCredential.user;
+      return user;
     } catch (e) {
       print("Erreur d'inscription : $e");
       return null;
@@ -27,33 +32,11 @@ class AuthService {
   // Connexion
   Future<User?> signInWithEmail(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return userCredential.user;
+      UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return result.user;
     } catch (e) {
       print("Erreur de connexion : $e");
       return null;
     }
   }
-
-  // Déconnexion
-  Future<void> signOut() async {
-    await _auth.signOut();
-  }
-
-  // Récupération de mot de passe
-  Future<void> resetPassword(String email) async {
-    await _auth.sendPasswordResetEmail(email: email);
-  }
-
-  // Vérifier si l’utilisateur est connecté
-  Stream<User?> get user => _auth.authStateChanges();
 }
-
-Future<String?> getUserRole(String uid) async {
-  DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection("users").doc(uid).get();
-  return userDoc["role"];
-}
-

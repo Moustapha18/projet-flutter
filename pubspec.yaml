@@ -11,9 +11,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: ^0.18.1
+  rxdart: ^0.27.7
   cupertino_icons: ^1.0.8
   device_info_plus: ^11.2.1
   firebase_core: ^3.11.0
+  firebase_storage: ^12.4.4
+  file_selector: ^1.0.3
   firebase_auth: ^5.4.2
   cloud_firestore: ^5.6.4
   provider: ^6.1.2
@@ -24,7 +28,17 @@ dependencies:
   flutter_local_notifications: ^18.0.0
   google_fonts: ^6.2.1
   font_awesome_flutter: ^10.8.0
-  
+  pdf: ^3.10.4
+  printing: ^5.11.0
+  share_plus: ^7.2.1
+  path_provider: ^2.1.1
+  open_file: ^3.2.1
+  mime: any
+  path: any
+  shared_preferences: ^2.2.2
+
+
+
 
 dev_dependencies:
   flutter_test:
@@ -32,3 +46,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/avatar.jpg
+    - assets/avatar1.jpg
+    - assets/avatar2.png
+    - assets/avatar3.jpg
+    - assets/avatar4.jpg
+    - assets/avatar5.png
+    - assets/avatar6.png
+
